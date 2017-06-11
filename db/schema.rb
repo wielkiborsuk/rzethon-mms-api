@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161210151907) do
+ActiveRecord::Schema.define(version: 20170611211015) do
 
   create_table "messages", id: :uuid, force: :cascade do |t|
     t.string   "content",     null: false
@@ -18,6 +18,8 @@ ActiveRecord::Schema.define(version: 20161210151907) do
     t.string   "destination", null: false
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+    t.string   "sender"
+    t.string   "receiver"
     t.index ["id"], name: "sqlite_autoindex_messages_1", unique: true
   end
 

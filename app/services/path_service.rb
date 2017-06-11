@@ -31,7 +31,7 @@ class PathService
       )**2
     }
 
-    @paths = Hash[ Node.where.not(name: node_name).collect { |n|
+    @paths = Hash[ Node.all.collect { |n|
       [n.name, Shortest::Path.astar(dist, heur, graph, node_name, n.name)]
     } ]
     Redis.current.set('paths', @paths.to_json)
