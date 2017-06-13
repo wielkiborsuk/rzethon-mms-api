@@ -18,7 +18,7 @@ class NodeService
   end
 
   def send_message(message)
-    client.post("/sender") do |request|
+    client.put("/messages/deliver") do |request|
       request.body = { message: message }
     end
   end

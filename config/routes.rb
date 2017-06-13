@@ -2,9 +2,15 @@ Rails.application.routes.draw do
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'
 
-  resources :messages, only: [:create, :index]
   resources :submissions, only: [:create]
   resources :propagations, only: [:create]
+
+  resources :messages, only: [:create, :index] do
+    collection do
+      put :deliver
+      put :report
+    end
+  end
 
   resources :nodes, only: [:index, :show] do
     collection do
