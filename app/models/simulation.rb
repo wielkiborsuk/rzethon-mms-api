@@ -48,6 +48,6 @@ class Simulation
       .map{ |nodes| NodesDistanceCalculator.call(nodes[0], nodes[1]) }
       .sum
 
-    lastReport[:time] + DistanceToTimeConverter.new(remainingDistance).time
+    lastReport[:time] + DistanceToTimeConverter.new(remainingDistance).time * 1000
   end
 end
