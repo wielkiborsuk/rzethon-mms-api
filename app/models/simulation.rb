@@ -10,10 +10,8 @@ class Simulation
     {
       id: message.id,
       path: path.map { |node| node.as_json2 },
-      lastReport: {
-        name: source.name,
-        time: (message.created_at.to_f * 1000).to_i
-      },
+      lastReport: lastReport,
+      deliveryTime: deliveryTime,
       speedFactor: 1.0,
     }
   end
@@ -34,5 +32,22 @@ class Simulation
 
   def source
     @source ||= Node.where(name: message.source).take
+  end
+
+  def lastReport
+    {
+      name: source.name,
+      time: (message.created_at.to_f * 1000).to_i
+    }
+  end
+
+  def deliveryTime
+    remainingPath = path.slice_before { |node| node.name == lastReport[:name] }.to_a[-1]
+    remainingDistance = remainingPath.slice(0, remainingPath.size-1)
+      .zip(remainingPath.slice(1, remainingPath.size-1))
+      .map{ |nodes| NodesDistanceCalculator.call(nodes[0], nodes[1]) }
+      .sum
+
+    lastReport[:time] + DistanceToTimeConverter.new(remainingDistance).time
   end
 end
