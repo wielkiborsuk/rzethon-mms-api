@@ -1,6 +1,6 @@
 class SimulationsController < ApplicationController
   def index
-    messages = Message.current.map do |message|
+    messages = Message.simulated.map do |message|
       Simulation.new(message, Node.current).as_json
     end
 
