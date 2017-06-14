@@ -20,4 +20,5 @@ class Message < ApplicationRecord
   include ActiveUUID::UUID
   validates :content, :source, :destination, presence: true
   scope :current, -> { all }
+  scope :simulated, -> { where(source: Node.current.name) }
 end

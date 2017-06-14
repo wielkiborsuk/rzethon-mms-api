@@ -14,12 +14,16 @@ class MessagesController < ApplicationController
     params.require(:message).permit(:content, :destination, :sender, :receiver)
   end
 
+  def full_message_params
+    params.require(:message).permit(:content, :destination, :sender, :receiver, :id, :source)
+  end
+
   def index
     render json: { messages: Message.all }
   end
 
   def deliver
-    message = Message.new(message_params)
+    message = Message.new(full_message_params)
     if message.save
       MessageSenderService.deliver(message.reload)
       MessageSenderService.report(message.reload)
