@@ -36,10 +36,18 @@ class Simulation
   end
 
   def lastReport
-    {
-      name: source.name,
-      time: (message.created_at.to_f * 1000).to_i
-    }
+    report = Report.where(message_id: message.id).order('delivery_date DESC').first
+    if report
+      {
+        name: report.node,
+        time: (report.delivery_date.to_f * 1000).to_i
+      }
+    else
+      {
+        name: source.name,
+        time: (message.created_at.to_f * 1000).to_i
+      }
+    end
   end
 
   def deliveryTime
