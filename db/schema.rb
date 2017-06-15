@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170611211015) do
+ActiveRecord::Schema.define(version: 20170614232209) do
 
   create_table "messages", id: :uuid, force: :cascade do |t|
     t.string   "content",     null: false
@@ -31,6 +31,15 @@ ActiveRecord::Schema.define(version: 20170611211015) do
     t.decimal  "location_z", precision: 16, scale: 12, null: false
     t.datetime "created_at",                           null: false
     t.datetime "updated_at",                           null: false
+  end
+
+  create_table "reports", id: :uuid, force: :cascade do |t|
+    t.uuid     "message_id",    null: false
+    t.string   "node",          null: false
+    t.datetime "delivery_date", null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.index ["id"], name: "sqlite_autoindex_reports_1", unique: true
   end
 
 end

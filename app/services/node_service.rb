@@ -1,6 +1,6 @@
 class NodeService
   attr_reader :host
-    
+
   def initialize(host)
     @host = host
   end
@@ -22,7 +22,13 @@ class NodeService
       request.body = { message: message }
     end
   end
-  
+
+  def send_report(report)
+    client.put("/messages/report") do |request|
+      request.body = { report: report }
+    end
+  end
+
   private
 
   def client
@@ -31,7 +37,7 @@ class NodeService
         faraday.request  :url_encoded             # form-encode POST params
         faraday.response :logger                  # log requests to STDOUT
         faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
-      end  
+      end
     end
   end
 end

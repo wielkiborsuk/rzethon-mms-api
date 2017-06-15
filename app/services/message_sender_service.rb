@@ -10,11 +10,6 @@ class MessageSenderService
     new(*args).send_message
   end
 
-  def self.report(*args)
-    new(*args).send_report
-  end
-
-
   def send_message
     if destination_node then
       Rails.logger.debug "Message uuid: #{message.id} will be sent in #{time_remaning_to_next_node(destination_node)} seconds to #{destination_node.host}"
@@ -22,11 +17,10 @@ class MessageSenderService
     end
   end
 
-  def send_report
+  def send_report(report)
     if report_node then
       Rails.logger.debug "Report for message uuid: #{message.id} will be sent in #{time_remaning_to_next_node(report_node)} seconds to #{report_node.host}"
-      #FIXME - need some kind of report worker
-      #SendMessageWorker.perform_in(time_remaning_to_next_node(report_node).seconds, report_node.host, message.id)
+      SendReportWorker.perform_in(time_remaning_to_next_node(report_node).seconds, report_node.host, report.id)
     end
   end
 

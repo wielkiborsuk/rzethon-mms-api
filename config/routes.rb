@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     collection do
       put :deliver
       put :report
+      get :reports
     end
   end
 
