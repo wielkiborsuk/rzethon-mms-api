@@ -8,6 +8,8 @@
 #  delivery_date :datetime         not null
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
+#  speed_factor  :float
+#  source        :string
 #
 # Indexes
 #

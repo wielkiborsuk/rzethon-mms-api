@@ -11,15 +11,17 @@ class MessagesController < ApplicationController
   end
 
   def message_params
-    params.require(:message).permit(:content, :destination, :sender, :receiver)
+    params.require(:message).permit(:content, :destination, :sender, :receiver, :speed_factor).tap do |message|
+      message[:speed_factor] = params[:message][:speedFactor]
+    end
   end
 
   def full_message_params
-    params.require(:message).permit(:content, :destination, :sender, :receiver, :id, :source)
+    params.require(:message).permit(:content, :destination, :sender, :receiver, :id, :source, :speed_factor)
   end
 
   def report_params
-    params.require(:report).permit(:id, :message_id, :node, :delivery_date)
+    params.require(:report).permit(:id, :message_id, :node, :delivery_date, :source, :speed_factor)
   end
 
   def index
@@ -35,7 +37,7 @@ class MessagesController < ApplicationController
     if message.save
       MessageSenderService.deliver(message.reload)
 
-      report = Report.new(message_id: message.id, node: Redis.current.get('node_name'), delivery_date: DateTime.now)
+      report = Report.new(message_id: message.id, node: Redis.current.get('node_name'), delivery_date: DateTime.now, source: message.source)
       if report.save
         MessageSenderService.new(message.reload).send_report(report.reload)
       end

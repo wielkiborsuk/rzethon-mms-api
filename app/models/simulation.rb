@@ -12,7 +12,7 @@ class Simulation
       path: path.map { |node| node.as_json2 },
       lastReport: lastReport,
       deliveryTime: deliveryTime,
-      speedFactor: 1.0,
+      speedFactor: message.speed_factor,
     }
   end
 
@@ -57,6 +57,6 @@ class Simulation
       .map{ |nodes| NodesDistanceCalculator.call(nodes[0], nodes[1]) }
       .sum
 
-    lastReport[:time] + DistanceToTimeConverter.new(remainingDistance).time * 1000
+    lastReport[:time] + DistanceToTimeConverter.new(remainingDistance).time * 1000 / message.speed_factor
   end
 end
