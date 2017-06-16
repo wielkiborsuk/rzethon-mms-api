@@ -8,6 +8,8 @@
 #  destination :string           not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
+#  sender      :string
+#  receiver    :string
 #
 # Indexes
 #
@@ -17,5 +19,7 @@
 class Message < ApplicationRecord
   include ActiveUUID::UUID
   validates :content, :source, :destination, presence: true
-  scope :current, -> { all }
+  has_many :reports
+
+  scope :simulated, -> { where(source: Node.current.name) }
 end

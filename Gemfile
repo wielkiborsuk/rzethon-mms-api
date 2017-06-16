@@ -20,7 +20,7 @@ gem 'redis', '~> 3.0'
 # gem 'capistrano-rails', group: :development
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
-# gem 'rack-cors'
+gem 'rack-cors'
 
 gem 'sidekiq', '~> 4.2.7'
 gem 'sinatra', require: false # for sidekiq
