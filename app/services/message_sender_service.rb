@@ -28,7 +28,7 @@ class MessageSenderService
 
   def time_remaning_to_next_node(target_node)
     distance = NodesDistanceCalculator.call(current_node, target_node)
-    (DistanceToTimeConverter.new(distance).time.presence || 1)/ 10
+    DistanceToTimeConverter.new(distance).time.presence || 1
   end
 
   def destination_node

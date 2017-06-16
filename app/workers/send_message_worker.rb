@@ -1,5 +1,6 @@
 class SendMessageWorker
   include Sidekiq::Worker
+  sidekiq_options dead: false
 
   def perform(host, message_uuid)
     message = Message.where(id: message_uuid).take
