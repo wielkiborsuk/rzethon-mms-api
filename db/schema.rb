@@ -10,16 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170614232209) do
+ActiveRecord::Schema.define(version: 20170616131706) do
 
   create_table "messages", id: :uuid, force: :cascade do |t|
-    t.string   "content",     null: false
-    t.string   "source",      null: false
-    t.string   "destination", null: false
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.string   "content",      null: false
+    t.string   "source",       null: false
+    t.string   "destination",  null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
     t.string   "sender"
     t.string   "receiver"
+    t.float    "speed_factor"
     t.index ["id"], name: "sqlite_autoindex_messages_1", unique: true
   end
 
@@ -39,6 +40,8 @@ ActiveRecord::Schema.define(version: 20170614232209) do
     t.datetime "delivery_date", null: false
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
+    t.float    "speed_factor"
+    t.string   "source"
     t.index ["id"], name: "sqlite_autoindex_reports_1", unique: true
   end
 
