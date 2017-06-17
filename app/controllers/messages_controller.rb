@@ -3,7 +3,7 @@ class MessagesController < ApplicationController
     message = Message.new(message_params.merge(source: Redis.current.get('node_name')))
 
     if message.save
-      MessageSenderService.deliver(message.reload)
+      MessageSenderService.call(message.reload)
       render json: { message: message }
     else
       render json: { error: message.errors.full_messages }, status: :unprocessable_entity
@@ -35,11 +35,11 @@ class MessagesController < ApplicationController
   def deliver
     message = Message.new(full_message_params)
     if message.save
-      MessageSenderService.deliver(message.reload)
+      MessageSenderService.call(message.reload)
 
-      report = Report.new(message_id: message.id, node: Redis.current.get('node_name'), delivery_date: DateTime.now, source: message.source)
+      report = Report.new(message_id: message.id, node: Redis.current.get('node_name'), delivery_date: DateTime.now, source: message.source, speed_factor: message.speed_factor)
       if report.save
-        MessageSenderService.new(message.reload).send_report(report.reload)
+        ReportSenderService.call(report.reload)
       end
     end
   end
@@ -47,8 +47,7 @@ class MessagesController < ApplicationController
   def report
     report = Report.new(report_params)
     if report.save
-      message = Message.where(id: report.message_id).take
-      MessageSenderService.new(message).send_report(report.reload)
+      ReportSenderService.call(report.reload)
     end
   end
 end
