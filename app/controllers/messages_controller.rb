@@ -10,22 +10,20 @@ class MessagesController < ApplicationController
     end
   end
 
-  def message_params
-    params.require(:message).permit(:content, :destination, :sender, :receiver, :speed_factor).tap do |message|
-      message[:speed_factor] = params[:message][:speedFactor]
-    end
-  end
-
-  def full_message_params
-    params.require(:message).permit(:content, :destination, :sender, :receiver, :id, :source, :speed_factor)
-  end
-
-  def report_params
-    params.require(:report).permit(:id, :message_id, :node, :delivery_date, :source, :speed_factor)
-  end
-
   def index
     render json: { messages: Message.all }
+  end
+
+  def sent
+    messages = Message.simulated
+    messages = messages.where(sender: @current_user) if @current_user
+    render json: { messages: messages }
+  end
+
+  def received
+    messages = Message.delivered
+    messages = messages.where(receiver: @current_user) if @current_user
+    render json: { messages: messages }
   end
 
   def reports
@@ -49,5 +47,21 @@ class MessagesController < ApplicationController
     if report.save
       ReportSenderService.call(report.reload)
     end
+  end
+
+  private
+
+  def message_params
+    params.require(:message).permit(:content, :destination, :sender, :receiver, :speed_factor).tap do |message|
+      message[:speed_factor] = params[:message][:speedFactor]
+    end
+  end
+
+  def full_message_params
+    params.require(:message).permit(:content, :destination, :sender, :receiver, :id, :source, :speed_factor)
+  end
+
+  def report_params
+    params.require(:report).permit(:id, :message_id, :node, :delivery_date, :source, :speed_factor)
   end
 end

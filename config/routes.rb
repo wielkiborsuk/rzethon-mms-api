@@ -10,6 +10,8 @@ Rails.application.routes.draw do
       put :deliver
       put :report
       get :reports
+      get :sent
+      get :received
     end
   end
 
