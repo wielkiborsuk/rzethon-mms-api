@@ -58,7 +58,7 @@ class MessagesController < ApplicationController
   end
 
   def full_message_params
-    params.require(:message).permit(:content, :destination, :sender, :receiver, :id, :source, :speed_factor)
+    params.require(:message).permit(:content, :destination, :sender, :receiver, :id, :source, :speed_factor, :created_at)
   end
 
   def report_params
