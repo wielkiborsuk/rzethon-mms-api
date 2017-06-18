@@ -30,6 +30,7 @@ module MmsApi
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
+    config.action_cable.disable_request_forgery_protection = true
     config.active_job.queue_adapter = :sidekiq
     config.autoload_paths += %W(#{config.root}/app/workers)
     config.logger = Logger.new(STDOUT)
