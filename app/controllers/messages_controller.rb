@@ -34,6 +34,7 @@ class MessagesController < ApplicationController
     message = Message.new(full_message_params)
     if message.save
       MessageSenderService.call(message.reload)
+      ActionCable.server.broadcast "deliveries_#{message.receiver}", message: message
 
       report = Report.new(message_id: message.id, node: Redis.current.get('node_name'), delivery_date: DateTime.now, source: message.source, speed_factor: message.speed_factor)
       if report.save
@@ -46,6 +47,11 @@ class MessagesController < ApplicationController
     report = Report.new(report_params)
     if report.save
       ReportSenderService.call(report.reload)
+
+      message = Message.where(id: report.message_id).take
+      if message and message.destination == report.node
+        ActionCable.server.broadcast "deliveries_#{message.sender}", report: message
+      end
     end
   end
 
