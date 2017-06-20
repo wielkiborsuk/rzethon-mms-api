@@ -58,8 +58,8 @@ class MessagesController < ApplicationController
       message = Message.where(id: report.message_id).take
       if message and message.destination == report.node
         ActionCable.server.broadcast "deliveries_#{message.sender}", report: message
-        broadcast_simulations(message.sender)
       end
+      broadcast_simulations(message.sender) unless not message
   end
 
   def broadcast_simulations(user)
