@@ -23,4 +23,5 @@ class Message < ApplicationRecord
   has_many :reports
 
   scope :simulated, -> { where(source: Node.current.name) }
+  scope :delivered, -> { where(destination: Node.current.name) }
 end
