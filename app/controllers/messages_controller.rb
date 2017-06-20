@@ -3,6 +3,7 @@ class MessagesController < ApplicationController
     message = Message.new(message_params.merge(source: Redis.current.get('node_name')))
 
     if message.save
+      broadcast_simulations(message.sender)
       MessageSenderService.call(message.reload)
       render json: { message: message }
     else
@@ -47,15 +48,29 @@ class MessagesController < ApplicationController
     report = Report.new(report_params)
     if report.save
       ReportSenderService.call(report.reload)
-
-      message = Message.where(id: report.message_id).take
-      if message and message.destination == report.node
-        ActionCable.server.broadcast "deliveries_#{message.sender}", report: message
-      end
+      broadcast_delivery_report(report.reload)
     end
   end
 
   private
+
+  def broadcast_delivery_report(report)
+      message = Message.where(id: report.message_id).take
+      if message and message.destination == report.node
+        ActionCable.server.broadcast "deliveries_#{message.sender}", report: message
+        broadcast_simulations(message.sender)
+      end
+  end
+
+  def broadcast_simulations(user)
+    messages = Message.simulated
+    messages = messages.where(sender: @current_user) if @current_user
+    messages = messages.map do |message|
+      Simulation.new(message, Node.current).as_json
+    end
+
+    ActionCable.server.broadcast "simulations_#{user}", messages: messages
+  end
 
   def message_params
     params.require(:message).permit(:content, :destination, :sender, :receiver, :speed_factor).tap do |message|
